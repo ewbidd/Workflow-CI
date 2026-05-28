@@ -7,15 +7,12 @@ import mlflow
 import mlflow.sklearn
 import matplotlib.pyplot as plt
 import os
-import dagshub
 
-# Setup DagsHub via environment variables
-dagshub.init(
-    repo_owner=os.environ['DAGSHUB_USERNAME'],
-    repo_name=os.environ['DAGSHUB_REPO'],
-    mlflow=True
-)
+# Setup DagsHub via MLflow tracking URI langsung
+DAGSHUB_USERNAME = os.environ['DAGSHUB_USERNAME']
+DAGSHUB_REPO = os.environ['DAGSHUB_REPO']
 
+mlflow.set_tracking_uri(f"https://dagshub.com/{DAGSHUB_USERNAME}/{DAGSHUB_REPO}.mlflow")
 mlflow.set_experiment("california_housing_ci")
 
 # Load data
