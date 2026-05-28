@@ -8,10 +8,7 @@ import mlflow.sklearn
 import matplotlib.pyplot as plt
 import os
 
-DAGSHUB_USERNAME = os.environ["DAGSHUB_USERNAME"]
-DAGSHUB_REPO = os.environ["DAGSHUB_REPO"]
-
-mlflow.set_tracking_uri(f"https://dagshub.com/{DAGSHUB_USERNAME}/{DAGSHUB_REPO}.mlflow")
+# Tracking URI sudah di-set via environment variable MLFLOW_TRACKING_URI
 mlflow.set_experiment("california_housing_ci")
 
 df = pd.read_csv("MLProject/california_housing_preprocessing.csv")
@@ -86,3 +83,4 @@ with mlflow.start_run(run_name="RandomForest_CI"):
     print(f"MAE         : {mae:.4f}")
     print(f"R2          : {r2:.4f}")
     print("CI Training selesai!")
+    
