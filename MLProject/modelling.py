@@ -11,7 +11,7 @@ import os
 # Tracking URI sudah di-set via environment variable MLFLOW_TRACKING_URI
 mlflow.set_experiment("california_housing_ci")
 
-df = pd.read_csv("MLProject/california_housing_preprocessing.csv")
+df = pd.read_csv("california_housing_preprocessing.csv")
 X = df.drop("MedHouseVal", axis=1)
 y = df["MedHouseVal"]
 
@@ -83,4 +83,3 @@ with mlflow.start_run(run_name="RandomForest_CI"):
     print(f"MAE         : {mae:.4f}")
     print(f"R2          : {r2:.4f}")
     print("CI Training selesai!")
-    
