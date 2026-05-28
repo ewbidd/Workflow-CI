@@ -7,8 +7,6 @@ import mlflow
 import mlflow.sklearn
 import matplotlib.pyplot as plt
 
-mlflow.set_experiment("california_housing_ci")
-
 df = pd.read_csv("california_housing_preprocessing.csv")
 X = df.drop("MedHouseVal", axis=1)
 y = df["MedHouseVal"]
@@ -18,14 +16,16 @@ X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
 y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
 
 param_grid = {
-    "n_estimators": [50, 100],
-    "max_depth": [5, 10],
-    "min_samples_split": [2, 5],
+    'n_estimators': [50, 100],
+    'max_depth': [5, 10],
+    'min_samples_split': [2, 5]
 }
 
 rf = RandomForestRegressor(random_state=42)
 grid_search = GridSearchCV(
-    rf, param_grid, cv=3, scoring="neg_mean_squared_error", n_jobs=-1, verbose=1
+    rf, param_grid, cv=3,
+    scoring='neg_mean_squared_error',
+    n_jobs=-1, verbose=1
 )
 grid_search.fit(X_train, y_train)
 
@@ -39,9 +39,9 @@ rmse = np.sqrt(mse)
 mae = mean_absolute_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
-mlflow.log_param("n_estimators", best_params["n_estimators"])
-mlflow.log_param("max_depth", best_params["max_depth"])
-mlflow.log_param("min_samples_split", best_params["min_samples_split"])
+mlflow.log_param("n_estimators", best_params['n_estimators'])
+mlflow.log_param("max_depth", best_params['max_depth'])
+mlflow.log_param("min_samples_split", best_params['min_samples_split'])
 mlflow.log_param("cv_folds", 3)
 
 mlflow.log_metric("mse", mse)
@@ -50,27 +50,29 @@ mlflow.log_metric("mae", mae)
 mlflow.log_metric("r2_score", r2)
 
 feat_importance = pd.Series(
-    best_model.feature_importances_, index=X.columns
+    best_model.feature_importances_,
+    index=X.columns
 ).sort_values(ascending=False)
 
 plt.figure(figsize=(10, 6))
-feat_importance.plot(kind="bar")
-plt.title("Feature Importance")
+feat_importance.plot(kind='bar')
+plt.title('Feature Importance')
 plt.tight_layout()
-plt.savefig("feature_importance.png")
+plt.savefig('feature_importance.png')
 plt.close()
-mlflow.log_artifact("feature_importance.png")
+mlflow.log_artifact('feature_importance.png')
 
 plt.figure(figsize=(8, 6))
 plt.scatter(y_test, y_pred, alpha=0.3)
-plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], "r--")
-plt.xlabel("Actual")
-plt.ylabel("Predicted")
-plt.title("Actual vs Predicted")
+plt.plot([y_test.min(), y_test.max()],
+         [y_test.min(), y_test.max()], 'r--')
+plt.xlabel('Actual')
+plt.ylabel('Predicted')
+plt.title('Actual vs Predicted')
 plt.tight_layout()
-plt.savefig("actual_vs_predicted.png")
+plt.savefig('actual_vs_predicted.png')
 plt.close()
-mlflow.log_artifact("actual_vs_predicted.png")
+mlflow.log_artifact('actual_vs_predicted.png')
 
 mlflow.sklearn.log_model(best_model, "model")
 
